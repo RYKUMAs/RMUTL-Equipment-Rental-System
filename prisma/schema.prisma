@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  username String
+  password String
+  role     Role
+  detailId Int
+  detail   UserDetail @relation(fields: [detailId], references: [id])
+  rent     Rent[]
+}
+
+enum Type {
+  STUDENT
+  TEACHER
+}
+
+model UserDetail {
+  id        Int    @id @default(autoincrement())
+  type      Type  
+  firstname String
+  lastname  String
+  user      User[]
+}
+// ทำแล้ว
+model Equipment {
+  id     Int    @id @default(autoincrement())
+  name   String
+  count  Int
+  broken Int
+  Rent   Rent[]
+}
+
+model EquipmentDetail {
+  id    Int    @id @default(autoincrement())
+  brand String
+  color String
+}
+// ทำแล้ว
+model Rent {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  equipmentId Int
+  user        User      @relation(fields: [userId], references: [id])
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  Return      Return?
+}
+
+model Return {
+  id     Int  @id @default(autoincrement())
+  rentId Int  @unique
+  rent   Rent @relation(fields: [rentId], references: [id])
+}
