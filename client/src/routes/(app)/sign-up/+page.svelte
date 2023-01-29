@@ -1,4 +1,11 @@
-<div class="flex items-center content-center justify-center min-h-[60vh]">
+<script>
+  import { fly } from 'svelte/transition';
+</script>
+
+<div
+  class="flex items-center content-center justify-center min-h-[60vh]"
+  in:fly={{ y: 32, duration: 500 }}
+>
   <form on:submit|preventDefault={() => {}} class="rounded-lg overflow-hidden">
     <div class="bg-amber-800 p-3">
       <h1 class="text-lg text-white font-bold uppercase text-center">SIGN UP</h1>

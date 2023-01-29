@@ -1,8 +1,8 @@
 <script>
-  import '../app.css';
+  import '../../app.css';
   import { fly } from 'svelte/transition';
-  import Navbar from '../lib/Navbar.svelte';
-  import Footer from '../lib/Footer.svelte';
+  import Navbar from '$lib/Navbar.svelte';
+  import Footer from '$lib/Footer.svelte';
 
   let menu = [
     {
