@@ -7,4 +7,5 @@ const storeStructure = {
   total: null
 };
 
+export const brandStore = writable(storeStructure);
 export const equipmentStore = writable(storeStructure);
