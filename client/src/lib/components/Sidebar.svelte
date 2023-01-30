@@ -3,21 +3,26 @@
   let list = [
     {
       path: '/admin',
-      text: 'Dashboard',
+      text: 'Dashboard'
+    },
+    {
+      path: '/admin/brand',
+      text: 'Brand'
     },
     {
       path: '/admin/equipment',
-      text: 'Equipment',
+      text: 'Equipment'
     },
+    {
+      path: '/admin/rent',
+      text: 'Rent'
+    }
   ];
 </script>
 
 <div class="py-3 pl-3 pr-1 uppercase font-bold">
   {#each list as item (item.path)}
-    <a
-      href="{item.path}"
-      class="menu-link {$page.route.id == item.path && 'active'}"
-    >
+    <a href={item.path} class="menu-link {$page.route.id == item.path && 'active'}">
       <span class="ml-2">{item.text}</span>
     </a>
   {/each}
