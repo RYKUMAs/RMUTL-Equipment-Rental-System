@@ -1,32 +1,27 @@
 import { FastifyInstance } from "fastify";
 import {
-  createEquipment,
-  deleteEquipment,
-  requestEquipment,
-  updateEquipment,
-} from "../services/equipment.service";
+  createBrand,
+  deleteBrand,
+  requestBrand,
+  updateBrand,
+} from "../services/brand.service";
 
 export default async function router(server: FastifyInstance) {
-  server.post("/api/equipment", {
-    handler: createEquipment,
+  server.post("/api/brand", {
+    handler: createBrand,
     schema: {
       body: {
         type: "object",
-        required: ["name", "count", "model", "brandId"],
+        required: ["name", "count"],
         properties: {
           name: { type: "string" },
-          count: { type: "number", minimum: 0 },
-          remain: { type: "number", minimum: 0, default: 0 },
-          broken: { type: "number", minimum: 0, default: 0 },
-          model: { type: "string" },
-          brandId: { type: "number", minimum: 1 },
         },
       },
     },
   });
 
-  server.get("/api/equipment", {
-    handler: requestEquipment,
+  server.get("/api/brand", {
+    handler: requestBrand,
     schema: {
       querystring: {
         type: "object",
@@ -38,8 +33,8 @@ export default async function router(server: FastifyInstance) {
     },
   });
 
-  server.get("/api/equipment/:id", {
-    handler: requestEquipment,
+  server.get("/api/brand/:id", {
+    handler: requestBrand,
     schema: {
       params: {
         type: "object",
@@ -50,8 +45,8 @@ export default async function router(server: FastifyInstance) {
     },
   });
 
-  server.put("/api/equipment/:id", {
-    handler: updateEquipment,
+  server.put("/api/brand/:id", {
+    handler: updateBrand,
     schema: {
       params: {
         type: "object",
@@ -63,19 +58,14 @@ export default async function router(server: FastifyInstance) {
         type: "object",
         properties: {
           name: { type: "string" },
-          count: { type: "number", minimum: 0 },
-          remain: { type: "number", minimum: 0, default: 0 },
-          broken: { type: "number", minimum: 0, default: 0 },
-          model: { type: "string" },
-          brandId: { type: "number", minimum: 1 },
         },
         additionalProperties: false,
       },
     },
   });
 
-  server.delete("/api/equipment/:id", {
-    handler: deleteEquipment,
+  server.delete("/api/brand/:id", {
+    handler: deleteBrand,
     schema: {
       params: {
         type: "object",

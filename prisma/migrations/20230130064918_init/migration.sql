@@ -24,16 +24,18 @@ CREATE TABLE `Equipment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `count` INTEGER NOT NULL,
+    `remain` INTEGER NOT NULL,
     `broken` INTEGER NOT NULL,
+    `model` VARCHAR(191) NOT NULL,
+    `brandId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `EquipmentDetail` (
+CREATE TABLE `Brand` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `brand` VARCHAR(191) NOT NULL,
-    `color` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -58,6 +60,9 @@ CREATE TABLE `Return` (
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_detailId_fkey` FOREIGN KEY (`detailId`) REFERENCES `UserDetail`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Equipment` ADD CONSTRAINT `Equipment_brandId_fkey` FOREIGN KEY (`brandId`) REFERENCES `Brand`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Rent` ADD CONSTRAINT `Rent_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

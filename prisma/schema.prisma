@@ -32,26 +32,30 @@ enum Type {
 
 model UserDetail {
   id        Int    @id @default(autoincrement())
-  type      Type  
+  type      Type
   firstname String
   lastname  String
   user      User[]
 }
-// ทำแล้ว
+
 model Equipment {
-  id     Int    @id @default(autoincrement())
-  name   String
-  count  Int
-  broken Int
-  Rent   Rent[]
+  id      Int    @id @default(autoincrement())
+  name    String
+  count   Int
+  remain  Int
+  broken  Int
+  model   String
+  brandId Int
+  brand   Brand  @relation(fields: [brandId], references: [id])
+  rent    Rent[]
 }
 
-model EquipmentDetail {
-  id    Int    @id @default(autoincrement())
-  brand String
-  color String
+model Brand {
+  id        Int         @id @default(autoincrement())
+  name     String
+  Equipment Equipment[]
 }
-// ทำแล้ว
+
 model Rent {
   id          Int       @id @default(autoincrement())
   userId      Int
