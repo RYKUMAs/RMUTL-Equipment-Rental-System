@@ -44,7 +44,7 @@ export async function requestReturn(
       take: limit,
     });
 
-  const count = id ? null : await prisma.return.count();
+  const count = id ? undefined : await prisma.return.count();
 
   return res.status(200).send({
     result: "ok",

@@ -49,7 +49,7 @@ export async function requestEquipment(
       take: limit,
     });
 
-  const count = id ? null : await prisma.equipment.count({
+  const count = id ? undefined : await prisma.equipment.count({
     where: {
       name: {
         contains: name,

@@ -49,7 +49,7 @@ export async function requestBrand(
       take: limit,
     });
 
-  const count = id ? null : await prisma.brand.count({
+  const count = id ? undefined : await prisma.brand.count({
     where: {
       name: {
         contains: name,

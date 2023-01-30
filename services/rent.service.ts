@@ -44,7 +44,7 @@ export async function requestRent(
       take: limit,
     });
 
-  const count = id ? null : await prisma.equipment.count();
+  const count = id ? undefined : await prisma.equipment.count();
 
   return res.status(200).send({
     result: "ok",
