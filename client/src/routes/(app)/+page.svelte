@@ -1,14 +1,14 @@
 <script>
   import axios from 'axios';
-  import Table from '$lib/Table.svelte';
-  import Datetime from '$lib/Datetime.svelte';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
+  import Table from '$lib/components/Table.svelte';
+  import Datetime from '$lib/components/Datetime.svelte';
 
   let equipment = [];
 
   onMount(async () => {
-    let res = await axios.get('http://127.0.0.1:5000/api/equipment');
+    let res = await axios.get('http://127.0.0.1:5000/api/equipment').catch((e) => console.log(e));
 
     let { data } = res.data;
 
