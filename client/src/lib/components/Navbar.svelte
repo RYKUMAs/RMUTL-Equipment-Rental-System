@@ -1,5 +1,5 @@
 <script>
-  import rmutl from './img/rmutl.jpg';
+  import rmutl from '../assets/rmutl.jpg';
 
   export let data = [];
 </script>
