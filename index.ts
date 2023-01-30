@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import Ajv from "ajv";
 import cors from "@fastify/cors";
+import brandRoute from "./routes/brand.route";
 import equipmentRoute from "./routes/equipment.route";
 import rentRoute from "./routes/rent.route";
 import returnRoute from "./routes/return.route";
@@ -68,6 +69,7 @@ server.setErrorHandler((error, request, reply) => {
 });
 
 server.register(cors);
+server.register(brandRoute);
 server.register(equipmentRoute);
 server.register(rentRoute);
 server.register(returnRoute);

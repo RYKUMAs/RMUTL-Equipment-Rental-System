@@ -18,6 +18,9 @@ export async function createEquipment(
 ) {
   const equipment = await prisma.equipment.create({
     data: { ...req.body },
+    include: {
+      brand: true
+    },
   });
 
   return res.status(200).send({
@@ -38,12 +41,18 @@ export async function requestEquipment(
       where: {
         id: id,
       },
+      include: {
+        brand: true,
+      },
     })
     : await prisma.equipment.findMany({
       where: {
         name: {
           contains: name,
         },
+      },
+      include: {
+        brand: true,
       },
       skip: offset,
       take: limit,
@@ -76,6 +85,9 @@ export async function updateEquipment(
     where: {
       id: id,
     },
+    include: {
+      brand: true,
+    },
     data: { ...req.body },
   });
 
@@ -94,6 +106,9 @@ export async function deleteEquipment(
   const equipment = await prisma.equipment.delete({
     where: {
       id: id,
+    },
+    include: {
+      brand: true,
     },
   });
 
