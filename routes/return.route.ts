@@ -16,6 +16,7 @@ export default async function router(server: FastifyInstance) {
         properties: {
           rentId: { type: "number", minimum: 1 },
         },
+        additionalProperties: false,
       },
     },
   });

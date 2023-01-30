@@ -12,10 +12,11 @@ export default async function router(server: FastifyInstance) {
     schema: {
       body: {
         type: "object",
-        required: ["name", "count"],
+        required: ["name"],
         properties: {
           name: { type: "string" },
         },
+        additionalProperties: false,
       },
     },
   });

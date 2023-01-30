@@ -17,6 +17,7 @@ export default async function router(server: FastifyInstance) {
           userId: { type: "number", minimum: 1 },
           equipmentId: { type: "number", minimum: 1 },
         },
+        additionalProperties: false,
       },
     },
   });
