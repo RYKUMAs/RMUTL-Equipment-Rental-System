@@ -17,7 +17,7 @@ export async function createEquipment(
   res: FastifyReply,
 ) {
   const equipment = await prisma.equipment.create({
-    data: { ...req.body },
+    data: req.body,
     include: {
       brand: true
     },
@@ -36,7 +36,7 @@ export async function requestEquipment(
   const { id } = req.params;
   const { name, limit, offset } = req.query;
 
-  const group = id
+  const equipment = id
     ? await prisma.equipment.findFirst({
       where: {
         id: id,
@@ -68,7 +68,7 @@ export async function requestEquipment(
 
   return res.status(200).send({
     result: "ok",
-    data: group,
+    data: equipment,
     limit: limit,
     offset: offset,
     total: count,
@@ -88,7 +88,7 @@ export async function updateEquipment(
     include: {
       brand: true,
     },
-    data: { ...req.body },
+    data: req.body,
   });
 
   return res.status(200).send({

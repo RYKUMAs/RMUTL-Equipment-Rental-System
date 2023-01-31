@@ -17,7 +17,7 @@ export async function createBrand(
   res: FastifyReply,
 ) {
   const brand = await prisma.brand.create({
-    data: { ...req.body },
+    data: req.body,
   });
 
   return res.status(200).send({
@@ -33,7 +33,7 @@ export async function requestBrand(
   const { id } = req.params;
   const { name, limit, offset } = req.query;
 
-  const group = id
+  const Brand = id
     ? await prisma.brand.findFirst({
       where: {
         id: id,
@@ -59,7 +59,7 @@ export async function requestBrand(
 
   return res.status(200).send({
     result: "ok",
-    data: group,
+    data: Brand,
     limit: limit,
     offset: offset,
     total: count,

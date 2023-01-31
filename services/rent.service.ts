@@ -33,7 +33,7 @@ export async function requestRent(
   const { id } = req.params;
   const { limit, offset } = req.query;
 
-  const group = id
+  const rent = id
     ? await prisma.rent.findFirst({
       where: {
         id: id,
@@ -44,11 +44,11 @@ export async function requestRent(
       take: limit,
     });
 
-  const count = id ? undefined : await prisma.equipment.count();
+  const count = id ? undefined : await prisma.rent.count();
 
   return res.status(200).send({
     result: "ok",
-    data: group,
+    data: rent,
     limit: limit,
     offset: offset,
     total: count,
