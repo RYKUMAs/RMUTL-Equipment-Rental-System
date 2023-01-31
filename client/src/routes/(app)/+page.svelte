@@ -1,5 +1,5 @@
 <script>
-  import { userStore } from "$lib/store";
+  import { userStore } from '$lib/store';
 
   $: {
     console.log($userStore);

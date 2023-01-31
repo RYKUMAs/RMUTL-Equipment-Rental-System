@@ -2,6 +2,27 @@
   import { fly } from 'svelte/transition';
   import rmutl from '$lib/assets/rmutl.jpg';
   import Navbar from '$lib/components/Navbar.svelte';
+  import { userStore } from '$lib/store';
+  import { onMount } from 'svelte';
+  import axios from 'axios';
+
+  onMount(async () => {
+    const res = await axios
+      .get('http://localhost:5000/auth/check', {
+        withCredentials: true
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    if (res) {
+      const body = res.data;
+
+      if (body.data.isAuthenticate == true) {
+        $userStore = body.data.user;
+      }
+    }
+  });
 
   let menu = [
     {

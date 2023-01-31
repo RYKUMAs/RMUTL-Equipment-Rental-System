@@ -2,7 +2,7 @@ import authService from "../services/auth.service";
 import { FastifyInstance } from "fastify";
 
 export default async function router(instance: FastifyInstance) {
-  const { signIn } = authService(instance);
+  const { isAuth, signIn, signOut } = authService(instance);
 
   instance.post("/sign-in", {
     handler: signIn,
@@ -12,9 +12,17 @@ export default async function router(instance: FastifyInstance) {
         required: ["username", "password"],
         properties: {
           username: { type: "string" },
-          password: { type: "string" }
-        }
-      }
-    }
-  })
+          password: { type: "string" },
+        },
+      },
+    },
+  });
+
+  instance.post("/sign-out", {
+    handler: signOut,
+  });
+
+  instance.get("/auth/check", {
+    handler: isAuth,
+  });
 }

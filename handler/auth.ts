@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 
 export default (instance: FastifyInstance) => {
   return {
-    authUser: async (request: any, reply: any, done: any) => {
+    authUser: (request: any, reply: any, done: any) => {
       let token: string = "";
 
       if (request.headers.authorization?.split(" ")[0] === "Bearer") {
@@ -15,7 +15,7 @@ export default (instance: FastifyInstance) => {
 
       if (token) {
         try {
-          request.user = await instance.jwt.verify(token);
+          request.user = instance.jwt.verify(token);
           done();
         } catch (e) {
           console.log(e);
