@@ -1,12 +1,45 @@
 <script>
+  import axios from "axios";
+  import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
+  import { goto } from '$app/navigation';
+  import { userStore } from "$lib/store";
+
+  let form = {
+    username: null,
+    password: null,
+  }
+
+  onMount(() => {
+    if ($userStore != null) goto('/');
+  })
+
+  async function onSubmit() {
+    const res = await axios.post('http://localhost:5000/sign-in', form, { 
+      withCredentials: true,
+    }).catch((e) => {
+      console.log(e);
+    });
+
+    const body = res.data;
+
+    console.log(body);
+
+    if (body.result == 'ok') {
+      delete body.result;
+      $userStore = body.data;
+      goto('/');
+    } else {
+      alert("Incorrect username or password.");
+    }
+  };
 </script>
 
 <div
   class="flex items-center content-center justify-center min-h-[60vh]"
   in:fly={{ y: 32, duration: 500 }}
 >
-  <form on:submit|preventDefault={() => {}} class="rounded-lg overflow-hidden">
+  <form on:submit|preventDefault={() => onSubmit()} class="rounded-lg overflow-hidden">
     <div class="bg-amber-800 p-3">
       <h1 class="text-lg text-white font-bold uppercase text-center">SIGN IN</h1>
     </div>
@@ -26,7 +59,7 @@
             />
           </svg>
         </label>
-        <input class="input" type="text" name="username" id="username" placeholder="Username" />
+        <input class="input" type="text" name="username" id="username" placeholder="Username" bind:value={form.username} />
       </div>
       <div class="flex shadow rounded-lg">
         <label for="password" class="label">
@@ -43,7 +76,7 @@
             />
           </svg>
         </label>
-        <input class="input" type="password" name="password" id="password" placeholder="Password" />
+        <input class="input" type="password" name="password" id="password" placeholder="Password" bind:value={form.password}/>
       </div>
       <hr class="my-3 border-slate-300" />
       <button type="submit" class="btn w-full">Submit</button>
