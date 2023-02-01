@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
 import {
-    createUser,
-    deleteUser,
-    requestUser,
-    updateUser,
-  } from "../services/user.service";
+  createUser,
+  deleteUser,
+  requestUser,
+  updateUser,
+} from "../services/user.service";
 
 export default async (server: FastifyInstance) => {
   server.post("/api/user", {
@@ -15,6 +15,14 @@ export default async (server: FastifyInstance) => {
         required: ["username"],
         properties: {
           username: { type: "string" },
+          password: { type: "string" },
+          detail: {
+            type: "object",
+            properties: {
+              firstname: { type: "string" },
+              lastname: { type: "string" },
+            },
+          },
         },
       },
     },
