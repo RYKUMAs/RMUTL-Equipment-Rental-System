@@ -2,7 +2,7 @@
   import axios from 'axios';
   import { equipmentStore } from '$lib/store';
   import Modal from '$lib/components/Modal.svelte';
-
+  import { onMount } from 'svelte';
   export let state = false;
 
   let form = {
@@ -10,6 +10,19 @@
     count: 1,
     broken: 0
   };
+
+  let listBrand = [];
+
+  onMount(async () => {
+    try {
+      const res = await axios
+        .get("http://localhost:5000/api/brand?limit=999")
+        .then((res) => res.data);
+      listBrand = res.data;
+    } catch (e) {
+      console.log(e.response.data);
+    }
+  });
 
   async function handleSubmit() {
     try {
@@ -52,6 +65,19 @@
             bind:value={form.name}
           />
         </div>
+        <div class="md:col-span-2 lg:col-span-2">
+          <label class="block" for="brand_code">Brand: </label>
+          <select
+            bind:value={form.brandId}
+            class="form-input"
+            id="brand_code"
+          >
+            <option value={null} disabled>Select Brand</option>
+            {#each listBrand as item}
+              <option value={item.id}>{item.name}</option>
+            {/each}
+          </select>
+        </div>
         <div class="lg:col-span-2">
           <label class="block mb-2" for="equipment-count">Equipment Count: </label>
           <input
@@ -83,3 +109,4 @@
     </form>
   </div>
 </Modal>
+  
