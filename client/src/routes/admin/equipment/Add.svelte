@@ -8,7 +8,8 @@
   let form = {
     name: null,
     count: 1,
-    broken: 0
+    broken: 0,
+    model: null
   };
 
   let listBrand = [];
@@ -16,7 +17,7 @@
   onMount(async () => {
     try {
       const res = await axios
-        .get("http://localhost:5000/api/brand?limit=999")
+        .get('http://localhost:5000/api/brand?limit=999')
         .then((res) => res.data);
       listBrand = res.data;
     } catch (e) {
@@ -41,6 +42,7 @@
       form = {
         name: null,
         count: null,
+        model: null,
         broken: 0
       };
     } catch (err) {
@@ -66,17 +68,28 @@
           />
         </div>
         <div class="md:col-span-2 lg:col-span-2">
-          <label class="block" for="brand_code">Brand: </label>
+          <label class="block mb-2" for="brand_name">Brand: </label>
           <select
             bind:value={form.brandId}
-            class="form-input"
-            id="brand_code"
+            class="input bg-slate-100 shadow w-full"
+            id="brand_name"
           >
             <option value={null} disabled>Select Brand</option>
             {#each listBrand as item}
               <option value={item.id}>{item.name}</option>
             {/each}
           </select>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="block mb-2" for="equipment-count">Equipment Model: </label>
+          <input
+            id="equipment-count"
+            type="text"
+            class="input bg-slate-100 shadow w-full"
+            placeholder="Enter Model"
+            bind:value={form.model}
+          />
         </div>
         <div class="lg:col-span-2">
           <label class="block mb-2" for="equipment-count">Equipment Count: </label>
@@ -99,14 +112,9 @@
           />
         </div>
         <div class="lg:col-span-1 flex items-end">
-          <input
-            type="submit"
-            class="btn bg-slate-500 hover:bg-slate-600 w-full"
-            value="Submit"
-          />
+          <input type="submit" class="btn bg-slate-500 hover:bg-slate-600 w-full" value="Submit" />
         </div>
       </div>
     </form>
   </div>
 </Modal>
-  
