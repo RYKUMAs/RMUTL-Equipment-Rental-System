@@ -17,13 +17,13 @@ model User {
   username String
   password String
   type     Type
-  detailId Int
+  detailId String
   detail   UserDetail @relation(fields: [detailId], references: [id])
   rent     Rent[]
 }
 
 model UserDetail {
-  id        Int    @id
+  id        String    @id
   firstname String
   lastname  String
   user      User[]

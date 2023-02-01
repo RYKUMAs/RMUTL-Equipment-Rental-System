@@ -19,6 +19,7 @@ export default async (server: FastifyInstance) => {
           detail: {
             type: "object",
             properties: {
+              id: { type: "string" },
               firstname: { type: "string" },
               lastname: { type: "string" },
             },

@@ -1,12 +1,54 @@
 <script>
+  import { goto } from '$app/navigation';
+  import axios from 'axios';
   import { fly } from 'svelte/transition';
+
+  let form = {
+    username: null,
+    password: null,
+    confirm: null,
+    detail: {
+      id: null,
+      firstname: null,
+      lastname: null
+    }
+  };
+
+  async function handleSubmit() {
+    try {
+      if (form.password != form.confirm) {
+        alert('Password not match.');
+      }
+
+      await axios.post('http://localhost:5000/api/user', {
+        ...form
+      });
+
+      form = {
+        username: null,
+        password: null,
+        confirm: null,
+        detail: {
+          id: null,
+          firstname: null,
+          lastname: null
+        }
+      };
+
+      goto('/sign-in');
+
+      alert('Success');
+    } catch (err) {
+      console.log(err);
+    }
+  }
 </script>
 
 <div
   class="flex items-center content-center justify-center min-h-[60vh]"
   in:fly={{ y: 32, duration: 500 }}
 >
-  <form on:submit|preventDefault={() => {}} class="rounded-lg overflow-hidden">
+  <form on:submit|preventDefault={() => handleSubmit()} class="rounded-lg overflow-hidden">
     <div class="bg-amber-800 p-3">
       <h1 class="text-lg text-white font-bold uppercase text-center">SIGN UP</h1>
     </div>
@@ -26,7 +68,14 @@
             />
           </svg>
         </label>
-        <input class="input" type="text" name="username" id="username" placeholder="Username" />
+        <input
+          class="input"
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Username"
+          bind:value={form.username}
+        />
       </div>
       <div class="flex shadow rounded-lg mb-3">
         <label for="password" class="label">
@@ -43,7 +92,14 @@
             />
           </svg>
         </label>
-        <input class="input" type="password" name="password" id="password" placeholder="Password" />
+        <input
+          class="input"
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          bind:value={form.password}
+        />
       </div>
       <div class="flex shadow rounded-lg mb-3">
         <label for="confirm-pwd" class="label">
@@ -66,6 +122,7 @@
           name="confirm-pwd"
           id="confirm-pwd"
           placeholder="Confirm Password"
+          bind:value={form.confirm}
         />
       </div>
       <!-- <hr class="my-3 border-slate-300" /> -->
@@ -86,7 +143,14 @@
           </svg>
         </label>
         <!-- first name -->
-        <input class="input" type="text" name="username" id="username" placeholder="fristname" />
+        <input
+          class="input"
+          type="text"
+          name="firstname"
+          id="firstname"
+          placeholder="Firstname"
+          bind:value={form.detail.firstname}
+        />
       </div>
 
       <div class="flex shadow rounded-lg mb-3">
@@ -105,9 +169,16 @@
           </svg>
         </label>
         <!-- last name -->
-        <input class="input" type="text" name="username" id="username" placeholder="lastname" />
+        <input
+          class="input"
+          type="text"
+          name="lastname"
+          id="lastname"
+          placeholder="Lastname"
+          bind:value={form.detail.lastname}
+        />
       </div>
-      
+
       <div class="flex shadow rounded-lg">
         <label for="student-id" class="label">
           <svg
@@ -129,6 +200,7 @@
           name="student-id"
           id="student-id"
           placeholder="60XXXXXX001-1"
+          bind:value={form.detail.id}
         />
       </div>
       <hr class="my-3 border-slate-300" />
