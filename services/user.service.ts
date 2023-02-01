@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, UserDetail } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 const prisma = new PrismaClient();
@@ -13,11 +13,27 @@ type Param = {
 };
 
 export async function createUser(
-  req: FastifyRequest<{ Body: User }>,
+  req: FastifyRequest<{ Body: User & { detail: UserDetail } }>,
   res: FastifyReply,
 ) {
+  const userDetail = await prisma.userDetail.create({
+    data: {
+      id: req.body.detail.id,
+      firstname: req.body.detail.firstname,
+      lastname: req.body.detail.lastname,
+    }
+  })
+
   const user = await prisma.user.create({
-    data: { ...req.body },
+    data: {
+      username: req.body.username,
+      password: req.body.password,
+      type: "STUDENT",
+      detailId: userDetail.id
+    },
+    include: {
+      detail: true
+    }
   });
 
   return res.status(200).send({
@@ -38,12 +54,18 @@ export async function requestUser(
       where: {
         id: id,
       },
+      include: {
+        detail: true
+      }
     })
     : await prisma.user.findMany({
       where: {
         username: {
           contains: username,
         },
+      },
+      include: {
+        detail: true,
       },
       skip: offset,
       take: limit,
