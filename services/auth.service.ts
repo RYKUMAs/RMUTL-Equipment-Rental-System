@@ -5,47 +5,11 @@ const prisma = new PrismaClient();
 
 export default (instance: FastifyInstance) => {
   return {
-    isAuth: async (
-      req: FastifyRequest,
-      res: FastifyReply,
-    ) => {
-      let token: string = "";
-
-      if (req.headers.authorization?.split(" ")[0] === "Bearer") {
-        token = req.headers.authorization?.split(" ")[1];
-      }
-
-      if (req.cookies.session) {
-        token = req.cookies.session;
-      }
-
-      if (token) {
-        try {
-          const user = instance.jwt.verify(token);
-          return res.status(200).send({
-            result: "ok",
-            data: {
-              isAuthenticate: true,
-              user: user,
-            },
-          });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-
-      return res.status(200).send({
-        result: "ok",
-        data: {
-          isAuthenticate: false,
-        }
-      });
-    },
     signOut: async (
-      req: FastifyRequest,
-      res: FastifyReply,
+      request: FastifyRequest,
+      reply: FastifyReply,
     ) => {
-      return res
+      return reply
         .status(200)
         .clearCookie("session")
         .send({
@@ -54,38 +18,34 @@ export default (instance: FastifyInstance) => {
     },
 
     signIn: async (
-      req: FastifyRequest<{ Body: User }>,
-      res: FastifyReply,
+      request: FastifyRequest<{ Body: User }>,
+      reply: FastifyReply,
     ) => {
       const user = await prisma.user.findFirst({
         where: {
-          username: req.body.username,
+          username: request.body.username,
+        },
+        include: {
+          detail: true,
         },
       });
 
-      if (user && user.password == req.body.password) {
-        try {
-          const token = instance.jwt.sign(user);
+      if (request.body.password == user?.password) {
+        const token = instance.jwt.sign(user);
 
-          return res
-            .status(200)
-            .cookie("session", token)
-            .send({
-              result: "ok",
-              data: {
-                user: user,
-                token: token,
-              },
-            });
-        } catch (e) {
-          console.log(e);
-        }
+        delete (user as any).password;
+
+        reply.status(200).cookie("session", token).send({
+          result: "ok",
+          token: token,
+          user: user,
+        });
+      } else {
+        reply.code(401).send({
+          result: "error",
+          message: "Unauthorized.",
+        });
       }
-
-      res.status(401).send({
-        result: "error",
-        message: "unauthorized",
-      });
     },
   };
 };

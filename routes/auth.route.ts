@@ -1,10 +1,12 @@
+import authHook from "../hooks/auth.hook";
 import authService from "../services/auth.service";
 import { FastifyInstance } from "fastify";
 
 export default async function router(instance: FastifyInstance) {
-  const { isAuth, signIn, signOut } = authService(instance);
+  const { authCheck } = authHook(instance);
+  const { signIn, signOut } = authService(instance);
 
-  instance.post("/sign-in", {
+  instance.post("/auth/sign-in", {
     handler: signIn,
     schema: {
       body: {
@@ -18,11 +20,11 @@ export default async function router(instance: FastifyInstance) {
     },
   });
 
-  instance.post("/sign-out", {
-    handler: signOut,
+  instance.get("/auth/check", {
+    handler: authCheck,
   });
 
-  instance.get("/auth/check", {
-    handler: isAuth,
+  instance.post("/auth/sign-out", {
+    handler: signOut,
   });
 }
