@@ -1,4 +1,4 @@
-import { PrismaClient, User, UserDetail } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 const prisma = new PrismaClient();
@@ -9,31 +9,21 @@ type Query = {
 } & User;
 
 type Param = {
-  id: number;
+  id: string;
 };
 
 export async function createUser(
-  req: FastifyRequest<{ Body: User & { detail: UserDetail } }>,
+  req: FastifyRequest<{ Body: User }>,
   res: FastifyReply,
 ) {
-  const userDetail = await prisma.userDetail.create({
-    data: {
-      id: req.body.detail.id,
-      firstname: req.body.detail.firstname,
-      lastname: req.body.detail.lastname,
-    }
-  })
-
   const user = await prisma.user.create({
     data: {
       username: req.body.username,
       password: req.body.password,
       type: "STUDENT",
-      detailId: userDetail.id
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
     },
-    include: {
-      detail: true
-    }
   });
 
   return res.status(200).send({
@@ -52,20 +42,14 @@ export async function requestUser(
   const user = id
     ? await prisma.user.findFirst({
       where: {
-        id: id,
+        username: id,
       },
-      include: {
-        detail: true
-      }
     })
     : await prisma.user.findMany({
       where: {
         username: {
           contains: username,
         },
-      },
-      include: {
-        detail: true,
       },
       skip: offset,
       take: limit,
@@ -94,7 +78,7 @@ export async function updateUser(
 
   const user = await prisma.user.update({
     where: {
-      id: id,
+      username: id,
     },
     data: { ...req.body },
   });
@@ -113,7 +97,7 @@ export async function deleteUser(
 
   const user = await prisma.user.delete({
     where: {
-      id: id,
+      username: id,
     },
   });
 
