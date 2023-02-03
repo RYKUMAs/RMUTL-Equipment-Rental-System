@@ -37,8 +37,8 @@
     <form on:submit|preventDefault|stopPropagation={handleSubmit}>
       <div class="text-xl font-bold">Add Brand</div>
       <hr class="mb-3" />
-      <div class="grid grid-cols-1 lg:grid-cols-7 gap-5">
-        <div class="lg:col-span-2">
+      <div class="grid grid-cols-1 lg:grid-cols-6 gap-5">
+        <div class="lg:col-span-4">
           <label class="block mb-2" for="brand-code">Brand</label>
           <input
             id="brand-name"
@@ -48,7 +48,7 @@
             bind:value={form.name}
           />
         </div>
-        <div class="lg:col-span-1 flex items-end">
+        <div class="lg:col-span-2 flex items-end">
           <input
             type="submit"
             class="btn-admin bg-slate-500 hover:bg-slate-600 w-full"

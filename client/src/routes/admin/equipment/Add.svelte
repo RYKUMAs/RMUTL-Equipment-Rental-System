@@ -3,6 +3,7 @@
   import { equipmentStore } from '$lib/store';
   import Modal from '$lib/components/Modal.svelte';
   import { onMount } from 'svelte';
+
   export let state = false;
 
   let form = {
@@ -27,9 +28,12 @@
 
   async function handleSubmit() {
     try {
-      const res = await axios.post('http://localhost:5000/api/equipment', {
-        ...form
-      });
+      const res = await axios.post(
+        'http://localhost:5000/api/equipment', 
+        {
+        ...form,
+        }
+      );
 
       const { data } = res.data;
 
@@ -56,7 +60,7 @@
     <form on:submit|preventDefault|stopPropagation={handleSubmit}>
       <div class="text-xl font-bold">Add equipment</div>
       <hr class="mb-3" />
-      <div class="grid grid-cols-1 lg:grid-cols-7 gap-5">
+      <div class="grid grid-cols-1 lg:grid-cols-6 gap-5">
         <div class="lg:col-span-2">
           <label class="block mb-2" for="equipment-code">Equipment Name: </label>
           <input
@@ -111,8 +115,11 @@
             bind:value={form.broken}
           />
         </div>
-        <div class="lg:col-span-1 flex items-end">
-          <input type="submit" class="btn bg-slate-500 hover:bg-slate-600 w-full" value="Submit" />
+        <div class="lg:col-span-2 flex items-end">
+          <input 
+            type="submit" 
+            class="btn bg-slate-500 hover:bg-slate-600 w-full" 
+            value="Submit" />
         </div>
       </div>
     </form>

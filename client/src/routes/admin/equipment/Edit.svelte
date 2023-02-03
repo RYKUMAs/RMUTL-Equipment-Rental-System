@@ -1,6 +1,6 @@
 <script>
   import axios from 'axios';
-  import { equipmentStore } from '$libstore';
+  import { equipmentStore } from '$lib/store';
   import Modal from '$lib/components/Modal.svelte';
 
   export let state = false;
@@ -10,9 +10,12 @@
 
   async function handleSubmit() {
     try {
-      const res = await axios.put(`http://localhost:3000/api/equipment/${equipment.id}`, {
-        ...equipment
-      });
+      const res = await axios.put(
+        `http://localhost:5000/api/equipment/${equipment.id}`, 
+        {
+        ...equipment,
+        }
+      );
 
       const { data } = res.data;
 
@@ -32,9 +35,13 @@
     <form on:submit|preventDefault|stopPropagation={handleSubmit}>
       <div class="text-xl font-bold">Edit Instructor</div>
       <hr class="mb-3" />
-      <div class="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-7 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-3">
         <div class="md:col-span-2 lg:col-span-2">
-          <label class="block mb-2" for="equipment-code">Equipment Name: </label>
+          <label 
+            class="block mb-2" 
+            for="equipment-code">Equipment Name: 
+          </label>
+
           <input
             id="equipment-name"
             type="text"
@@ -43,8 +50,12 @@
             bind:value={equipment.name}
           />
         </div>
-        <div class=" md:col-span-2 lg:col-span-3">
-          <label class="block mb-2" for="equipment-count">Equipment Count: </label>
+        <div>
+          <label 
+            class="block mb-2" 
+            for="equipment-count">Equipment Count: 
+          </label>
+
           <input
             id="equipment-count"
             type="number"
@@ -54,26 +65,35 @@
           />
         </div>
 
-        <div class=" md:col-span-2 lg:col-span-3">
-          <label class="block mb-2" for="equipment-count">Equipment Broken: </label>
+        <div class="mb-3">
+          <label 
+            class="block mb-2" 
+            for="equipment-broken">Equipment Broken: </label>
           <input
-            id="equipment-count"
+            id="equipment-broken"
             type="number"
             class="input bg-slate-100 shadow w-full"
-            placeholder="Enter Count"
+            placeholder="Enter broken"
             bind:value={equipment.broken}
           />
         </div>
+        <div>
+          <input 
+            type="submit" 
+            class="btn bg-slate-500 hover:bg-slate-600 w-full" 
+            value="Save" 
+            />
+        </div>
+        <div>
+          <input
+            type="reset"
+            class="btn bg-red-500 hover:bg-slate-600 w-full"
+            value="Reset"
+            on:click|preventDefault={() => (equipment = { ...reset })}
+          />
+        </div>
       </div>
-      <div>
-        <input type="submit" class="btn bg-slate-500 hover:bg-slate-600 w-full" value="Save" />
-        <input
-          type="reset"
-          class="btn bg-slate-500 hover:bg-slate-600 w-full"
-          value="Reset"
-          on:click|preventDefault={() => (equipment = { ...reset })}
-        />
-      </div>
+      
     </form>
   </div>
 </Modal>

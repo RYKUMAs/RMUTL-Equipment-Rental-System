@@ -9,4 +9,6 @@ const storeStructure = {
 
 export const brandStore = writable(storeStructure);
 export const equipmentStore = writable(storeStructure);
+export const rentStore = writable(storeStructure);
+export const returnStore = writable(storeStructure);
 export const userStore = writable(null);

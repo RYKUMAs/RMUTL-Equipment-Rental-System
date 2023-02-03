@@ -1,35 +1,33 @@
 <script>
   import axios from 'axios';
-  import { brandStore } from '$lib/store';
+  import { rentStore } from '$lib/store';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import Add from './Add.svelte';
-  import Edit from './Edit.svelte';
-
-  let editBrand = false;
-  let editData = null;
 
   onMount(async () => {
-    let res = await axios.get('http://localhost:5000/api/brand').catch((e) => console.log(e));
+    let res = await axios.get('http://localhost:5000/api/rent').catch((e) => console.log(e));
 
     const body = res.data;
 
     if (body && body.result == 'ok') {
       delete body.result;
 
-      $brandStore = body;
+      $rentStore = body;
     }
+
+    console.log($rentStore);
   });
 
   async function getData() {
-    let res = await axios.get('http://127.0.0.1:5000/api/brand').catch((e) => console.log(e));
+    let res = await axios.get('http://127.0.0.1:5000/api/rent').catch((e) => console.log(e));
 
     const body = res.data;
 
     if (body && body.result == 'ok') {
       delete body.result;
 
-      $brandStore = body;
+      $rentStore = body;
     }
   }
 
@@ -39,7 +37,7 @@
     }
 
     let res = await axios
-      .delete(`http://localhost:5000/api/brand/${id}`)
+      .delete(`http://localhost:5000/api/rent/${id}`)
       .catch((e) => console.log(e));
 
     const body = res.data;
@@ -54,38 +52,36 @@
   function showAddData() {
     addData = !addData;
   }
-
-  function showEdit(item) {
-    editBrand = true;
-    editData = { ...item };
-  }
 </script>
 
 <Add bind:state={addData} />
-<Edit bind:state={editBrand} brand={editData} />
 
 <div class="p-5" in:fly={{ y: 32, duration: 500 }}>
   <div class="mb-5">
-    <button class="btn bg-slate-500 hover:bg-slate-600" on:click={() => showAddData()}>Add </button>
+    <button class="btn bg-slate-500 hover:bg-slate-600" on:click={() => showAddData()}>Add</button>
   </div>
   <div class="rounded-lg overflow-hidden border border-slate-500">
     <table class="w-full">
       <tr class="border-b bg-slate-500 text-white">
         <th>ID</th>
-        <th>Name</th>
+        <th>User</th>
+        <th>Equipment (Name / Model / Brand)</th>
+        <th>Count</th>
+        <th>Date</th>
+        <th>Return</th>
         <th>Action</th>
       </tr>
-      {#each $brandStore.data as item (item.id)}
+      {#each $rentStore.data as item (item.id)}
         <tr class="odd:bg-slate-100">
           <td>{item.id}</td>
-          <td>{item.name}</td>
+          <td>{item.user.username}</td>
+          <td>{item.equipment.name} / {item.equipment.model} / {item.equipment.brand.name}</td>
+          <td>{item.count}</td>
+          <td>{item.date}</td>
+          <td>{item.return ? item.return.date : "In Use"}</td>
           <td>
             <div class="flex justify-center gap-5">
-              <!-- editbutton -->
-              <button
-                on:click={() => showEdit(item)}
-                class="rounded-full transition-all text-indigo-500 hover:text-indigo-700"
-              >
+              <button class="rounded-full transition-all text-indigo-500 hover:text-indigo-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -100,7 +96,6 @@
                   />
                 </svg>
               </button>
-              <!-- editbutton -->
               <button
                 on:click={() => handleDelete(item.id)}
                 class="rounded-full transition-all text-red-500 hover:text-red-700"
