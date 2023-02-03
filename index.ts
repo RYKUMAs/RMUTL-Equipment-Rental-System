@@ -10,8 +10,9 @@ const server = fastify();
 
 const schemaCompilers: Record<string, Ajv> = {
   body: new Ajv({
-    removeAdditional: true,
+    removeAdditional: "all",
     coerceTypes: false,
+    useDefaults: true,
     allErrors: true,
   }),
   params: new Ajv({
