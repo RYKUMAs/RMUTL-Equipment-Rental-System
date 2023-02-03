@@ -1,46 +1,31 @@
 <script>
   import { fly } from 'svelte/transition';
-  import rmutl from '$lib/assets/rmutl.jpg';
-  import Navbar from '$lib/components/Navbar.svelte';
   import { userStore } from '$lib/store';
   import { onMount } from 'svelte';
   import axios from 'axios';
+  import rmutl from '$lib/assets/rmutl.jpg';
+  import Navbar from '$lib/components/Navbar.svelte';
 
   onMount(async () => {
-    const res = await axios
+    const response = await axios
       .get('http://localhost:5000/auth/check', {
         withCredentials: true
       })
       .catch((e) => {
         console.log(e);
       });
+      
+    if (response) {
+      const body = response.data;
 
-    if (res) {
-      const body = res.data;
-
-      if (body.data.isAuthenticate == true) {
-        $userStore = body.data.user;
+      if (body.isAuthenticated == true) {
+        $userStore = body.user;
       }
     }
   });
-
-  let menu = [
-    {
-      name: 'Home',
-      link: '/'
-    },
-    {
-      name: 'Sign In',
-      link: '/sign-in'
-    },
-    {
-      name: 'Sign Up',
-      link: '/sign-up'
-    }
-  ];
 </script>
 
-<Navbar data={menu} />
+<Navbar/>
 
 <div class="p-5" in:fly={{ x: -50, duration: 100, delay: 300 }} out:fly={{ x: -50, duration: 100 }}>
   <slot />

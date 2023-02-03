@@ -16,7 +16,7 @@
 
   async function onSubmit() {
     const res = await axios
-      .post('http://localhost:5000/sign-in', form, {
+      .post('http://localhost:5000/auth/sign-in', form, {
         withCredentials: true
       })
       .catch((e) => {
@@ -31,7 +31,7 @@
 
     if (body.result == 'ok') {
       delete body.result;
-      $userStore = body.data;
+      $userStore = body.user;
       goto('/');
     }
   }
