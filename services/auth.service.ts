@@ -32,7 +32,9 @@ export default (instance: FastifyInstance) => {
 
         delete (user as any).password;
 
-        reply.status(200).cookie("session", token).send({
+        reply.status(200).cookie("session", token, {
+          httpOnly: true,
+        }).send({
           result: "ok",
           token: token,
           user: user,
