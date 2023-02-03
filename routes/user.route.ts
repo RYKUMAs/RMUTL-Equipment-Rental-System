@@ -12,18 +12,12 @@ export default async (server: FastifyInstance) => {
     schema: {
       body: {
         type: "object",
-        required: ["username"],
+        required: ["username", "password", "firstname", "lastname"],
         properties: {
           username: { type: "string" },
           password: { type: "string" },
-          detail: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              firstname: { type: "string" },
-              lastname: { type: "string" },
-            },
-          },
+          firstname: { type: "string" },
+          lastname: { type: "string" },
         },
       },
     },
@@ -67,7 +61,9 @@ export default async (server: FastifyInstance) => {
       body: {
         type: "object",
         properties: {
-          username: { type: "string" },
+          password: { type: "string" },
+          firstname: { type: "string" },
+          lastname: { type: "string" },
         },
       },
     },

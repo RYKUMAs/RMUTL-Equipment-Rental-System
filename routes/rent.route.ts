@@ -14,10 +14,10 @@ export default async function router(server: FastifyInstance) {
         type: "object",
         required: ["userId", "equipmentId"],
         properties: {
-          userId: { type: "number", minimum: 1 },
+          userId: { type: "string" },
           equipmentId: { type: "number", minimum: 1 },
+          count: { type: "number", minimum: 1 },
         },
-        additionalProperties: false,
       },
     },
   });
@@ -59,10 +59,10 @@ export default async function router(server: FastifyInstance) {
       body: {
         type: "object",
         properties: {
-          userId: { type: "number", minimum: 1 },
+          userId: { type: "string" },
           equipmentId: { type: "number", minimum: 1 },
+          count: { type: "number", minimum: 1 },
         },
-        additionalProperties: false,
       },
     },
   });
