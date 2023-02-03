@@ -18,6 +18,15 @@ export async function createRent(
 ) {
   const rent = await prisma.rent.create({
     data: { ...req.body },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
+    },
   });
 
   return res.status(200).send({
@@ -38,10 +47,28 @@ export async function requestRent(
       where: {
         id: id,
       },
+      include: {
+        user: true,
+        return: true,
+        equipment: {
+          include: {
+            brand: true,
+          },
+        },
+      },
     })
     : await prisma.rent.findMany({
       skip: offset,
       take: limit,
+      include: {
+        user: true,
+        return: true,
+        equipment: {
+          include: {
+            brand: true,
+          },
+        },
+      },
     });
 
   const count = id ? undefined : await prisma.rent.count();
@@ -66,6 +93,15 @@ export async function updateRent(
       id: id,
     },
     data: { ...req.body },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
+    },
   });
 
   return res.status(200).send({
@@ -83,6 +119,15 @@ export async function deleteRent(
   const rent = await prisma.rent.delete({
     where: {
       id: id,
+    },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
     },
   });
 
