@@ -11,7 +11,7 @@ export default (instance: FastifyInstance) => {
     ) => {
       return reply
         .status(200)
-        .clearCookie("session")
+        .cookie("session", "")
         .send({
           result: "ok",
         });
@@ -24,9 +24,6 @@ export default (instance: FastifyInstance) => {
       const user = await prisma.user.findFirst({
         where: {
           username: request.body.username,
-        },
-        include: {
-          detail: true,
         },
       });
 
