@@ -4,6 +4,10 @@
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import Add from './Add.svelte';
+  import Edit from './Edit.svelte';
+
+  let editBrand = false;
+  let editData = null;
 
   onMount(async () => {
     let res = await axios.get('http://localhost:5000/api/brand').catch((e) => console.log(e));
@@ -50,13 +54,19 @@
   function showAddData() {
     addData = !addData;
   }
+
+  function showEdit(item) {
+    editBrand = true;
+    editData = { ...item };
+  }
 </script>
 
 <Add bind:state={addData} />
+<Edit bind:state={editBrand} brand={editData} />
 
 <div class="p-5" in:fly={{ y: 32, duration: 500 }}>
   <div class="mb-5">
-    <button class="btn bg-slate-500 hover:bg-slate-600" on:click={() => showAddData()}>Add</button>
+    <button class="btn bg-slate-500 hover:bg-slate-600" on:click={() => showAddData()}>Add </button>
   </div>
   <div class="rounded-lg overflow-hidden border border-slate-500">
     <table class="w-full">
@@ -71,7 +81,11 @@
           <td>{item.name}</td>
           <td>
             <div class="flex justify-center gap-5">
-              <button class="rounded-full transition-all text-indigo-500 hover:text-indigo-700">
+              <!-- editbutton -->
+              <button
+                on:click={() => showEdit(item)}
+                class="rounded-full transition-all text-indigo-500 hover:text-indigo-700"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -86,6 +100,7 @@
                   />
                 </svg>
               </button>
+              <!-- editbutton -->
               <button
                 on:click={() => handleDelete(item.id)}
                 class="rounded-full transition-all text-red-500 hover:text-red-700"
