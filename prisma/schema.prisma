@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,39 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-model User {
-  id       Int        @id @default(autoincrement())
-  username String
-  password String
-  role     Role
-  detailId Int
-  detail   UserDetail @relation(fields: [detailId], references: [id])
-  rent     Rent[]
-}
-
 enum Type {
   STUDENT
   TEACHER
 }
 
-model UserDetail {
-  id        Int    @id @default(autoincrement())
+model User {
+  username  String @id @unique
+  password  String
   type      Type
   firstname String
   lastname  String
-  user      User[]
+  rent      Rent[]
+}
+
+model Brand {
+  id        Int         @id @default(autoincrement())
+  name      String
+  equipment Equipment[]
 }
 
 model Equipment {
   id      Int    @id @default(autoincrement())
   name    String
   count   Int
-  remain  Int
   broken  Int
   model   String
   brandId Int
@@ -50,23 +38,20 @@ model Equipment {
   rent    Rent[]
 }
 
-model Brand {
-  id        Int         @id @default(autoincrement())
-  name     String
-  Equipment Equipment[]
-}
-
 model Rent {
   id          Int       @id @default(autoincrement())
-  userId      Int
+  userId      String
   equipmentId Int
-  user        User      @relation(fields: [userId], references: [id])
+  count       Int
+  date        DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [username])
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
-  Return      Return?
+  return      Return?
 }
 
 model Return {
-  id     Int  @id @default(autoincrement())
-  rentId Int  @unique
-  rent   Rent @relation(fields: [rentId], references: [id])
+  id     Int      @id @default(autoincrement())
+  date   DateTime @default(now())
+  rentId Int      @unique
+  rent   Rent     @relation(fields: [rentId], references: [id])
 }
