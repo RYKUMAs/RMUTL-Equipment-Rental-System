@@ -12,14 +12,38 @@ type Query = {
   offset: number;
 } & Equipment;
 
+type EquipmentWithRemain<T> = T & {
+  remain: number;
+};
+
+async function calculateRemain(
+  equipment: Equipment,
+): Promise<EquipmentWithRemain<Equipment>> {
+  const aggregation = await prisma.rent.aggregate({
+    _sum: {
+      count: true,
+    },
+    where: {
+      equipmentId: equipment.id,
+      return: null,
+    },
+  });
+
+  return {
+    ...equipment,
+    remain: equipment.count -
+      (aggregation._sum.count != null ? aggregation._sum.count : 0),
+  };
+}
+
 export async function createEquipment(
   req: FastifyRequest<{ Body: Equipment }>,
   res: FastifyReply,
 ) {
   const equipment = await prisma.equipment.create({
-    data: { ...req.body },
+    data: req.body,
     include: {
-      brand: true
+      brand: true,
     },
   });
 
@@ -36,7 +60,7 @@ export async function requestEquipment(
   const { id } = req.params;
   const { name, limit, offset } = req.query;
 
-  const group = id
+  const equipment = id
     ? await prisma.equipment.findFirst({
       where: {
         id: id,
@@ -66,9 +90,21 @@ export async function requestEquipment(
     },
   });
 
+  let data: EquipmentWithRemain<Equipment>[] = [];
+
+  if (Array.isArray(equipment)) {
+    for (let i = 0; i < equipment.length; i++) {
+      data = [...data, await calculateRemain(equipment[i])];
+    }
+  }
+
+  if (id && equipment != null) {
+    data.push(await calculateRemain(equipment as Equipment));
+  }
+
   return res.status(200).send({
     result: "ok",
-    data: group,
+    data: id ? data[0] : data,
     limit: limit,
     offset: offset,
     total: count,
@@ -88,12 +124,14 @@ export async function updateEquipment(
     include: {
       brand: true,
     },
-    data: { ...req.body },
+    data: req.body,
   });
+
+  const data = await calculateRemain(equipment)
 
   return res.status(200).send({
     result: "ok",
-    data: equipment,
+    data: data,
   });
 }
 

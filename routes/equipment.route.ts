@@ -12,11 +12,10 @@ export default async function router(server: FastifyInstance) {
     schema: {
       body: {
         type: "object",
-        required: ["name", "count", "model", "remain", "broken","brandId"],
+        required: ["name", "count", "model", "broken","brandId"],
         properties: {
           name: { type: "string" },
           count: { type: "number", minimum: 0 },
-          remain: { type: "number", minimum: 0, default: 0 },
           broken: { type: "number", minimum: 0, default: 0 },
           model: { type: "string" },
           brandId: { type: "number", minimum: 1 },
@@ -65,7 +64,6 @@ export default async function router(server: FastifyInstance) {
         properties: {
           name: { type: "string" },
           count: { type: "number", minimum: 0 },
-          remain: { type: "number", minimum: 0, default: 0 },
           broken: { type: "number", minimum: 0, default: 0 },
           model: { type: "string" },
           brandId: { type: "number", minimum: 1 },

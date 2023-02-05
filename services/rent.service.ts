@@ -18,6 +18,15 @@ export async function createRent(
 ) {
   const rent = await prisma.rent.create({
     data: { ...req.body },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
+    },
   });
 
   return res.status(200).send({
@@ -33,22 +42,40 @@ export async function requestRent(
   const { id } = req.params;
   const { limit, offset } = req.query;
 
-  const group = id
+  const rent = id
     ? await prisma.rent.findFirst({
       where: {
         id: id,
+      },
+      include: {
+        user: true,
+        return: true,
+        equipment: {
+          include: {
+            brand: true,
+          },
+        },
       },
     })
     : await prisma.rent.findMany({
       skip: offset,
       take: limit,
+      include: {
+        user: true,
+        return: true,
+        equipment: {
+          include: {
+            brand: true,
+          },
+        },
+      },
     });
 
-  const count = id ? undefined : await prisma.equipment.count();
+  const count = id ? undefined : await prisma.rent.count();
 
   return res.status(200).send({
     result: "ok",
-    data: group,
+    data: rent,
     limit: limit,
     offset: offset,
     total: count,
@@ -66,6 +93,15 @@ export async function updateRent(
       id: id,
     },
     data: { ...req.body },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
+    },
   });
 
   return res.status(200).send({
@@ -83,6 +119,15 @@ export async function deleteRent(
   const rent = await prisma.rent.delete({
     where: {
       id: id,
+    },
+    include: {
+      user: true,
+      return: true,
+      equipment: {
+        include: {
+          brand: true,
+        },
+      },
     },
   });
 

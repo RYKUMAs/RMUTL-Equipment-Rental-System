@@ -9,7 +9,7 @@ type Query = {
 } & User;
 
 type Param = {
-  id: number;
+  id: string;
 };
 
 export async function createUser(
@@ -17,7 +17,13 @@ export async function createUser(
   res: FastifyReply,
 ) {
   const user = await prisma.user.create({
-    data: { ...req.body },
+    data: {
+      username: req.body.username,
+      password: req.body.password,
+      type: "STUDENT",
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+    },
   });
 
   return res.status(200).send({
@@ -36,7 +42,7 @@ export async function requestUser(
   const user = id
     ? await prisma.user.findFirst({
       where: {
-        id: id,
+        username: id,
       },
     })
     : await prisma.user.findMany({
@@ -72,7 +78,7 @@ export async function updateUser(
 
   const user = await prisma.user.update({
     where: {
-      id: id,
+      username: id,
     },
     data: { ...req.body },
   });
@@ -91,7 +97,7 @@ export async function deleteUser(
 
   const user = await prisma.user.delete({
     where: {
-      id: id,
+      username: id,
     },
   });
 

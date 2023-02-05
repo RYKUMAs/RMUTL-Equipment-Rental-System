@@ -1,17 +1,18 @@
-import Fastify from "fastify";
 import Ajv from "ajv";
-import cors from "@fastify/cors";
-import brandRoute from "./routes/brand.route";
-import equipmentRoute from "./routes/equipment.route";
-import rentRoute from "./routes/rent.route";
-import returnRoute from "./routes/return.route";
+import fastify from "fastify";
+import fastifyJwt from "@fastify/jwt";
+import fastifyCors from "@fastify/cors";
+import fastifyCookie from "@fastify/cookie";
+import fastifyAutoload from "@fastify/autoload";
+import path from "path";
 
-const server = Fastify();
+const server = fastify();
 
 const schemaCompilers: Record<string, Ajv> = {
   body: new Ajv({
-    removeAdditional: true,
+    removeAdditional: "all",
     coerceTypes: false,
+    useDefaults: true,
     allErrors: true,
   }),
   params: new Ajv({
@@ -39,40 +40,14 @@ server.setValidatorCompiler((req) => {
 
   return compiler.compile(req.schema);
 });
- 
-server.setErrorHandler((error, request, reply) => {
-  console.log(error);
 
-  if (error.validation) {
-    return reply.status(error.statusCode!).send({
-      result: "error",
-      errors: error.validation.map((obj) => {
-        return {
-          schema: obj.keyword == "required"
-            ? obj.instancePath.concat("/")
-            : obj.instancePath,
-          context: error.validationContext,
-          params: obj.params,
-          message: obj.message,
-        };
-      }),
-    });
-  }
-
-  return reply.status(500).send({
-    result: "error",
-    errors: [{
-      type: "internal_server_error",
-      message: "unknown error.",
-    }],
-  });
+server.register(fastifyCors, {
+  origin: "http://localhost:8080",
+  credentials: true,
 });
-
-server.register(cors);
-server.register(brandRoute);
-server.register(equipmentRoute);
-server.register(rentRoute);
-server.register(returnRoute);
+server.register(fastifyCookie);
+server.register(fastifyJwt, { secret: "equipment-rental-system" });
+server.register(fastifyAutoload, { dir: path.join(__dirname, "routes") });
 
 const start = async () => {
   await server.listen({ host: "0.0.0.0", port: 5000 }).then(() => {
