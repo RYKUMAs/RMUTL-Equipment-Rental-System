@@ -1,12 +1,48 @@
 <script>
+  import { goto } from '$app/navigation';
+  import axios from 'axios';
   import { fly } from 'svelte/transition';
+
+  let form = {
+    username: null,
+    password: null,
+    confirm: null,
+    firstname: null,
+    lastname: null
+  };
+
+  async function handleSubmit() {
+    try {
+      if (form.password != form.confirm) {
+        alert('Password not match.');
+      }
+
+      await axios.post('http://localhost:5000/api/user', {
+        ...form
+      });
+
+      form = {
+        username: null,
+        password: null,
+        confirm: null,
+        firstname: null,
+        lastname: null
+      };
+
+      goto('/sign-in');
+
+      alert('Success');
+    } catch (err) {
+      console.log(err);
+    }
+  }
 </script>
 
 <div
   class="flex items-center content-center justify-center min-h-[60vh]"
   in:fly={{ y: 32, duration: 500 }}
 >
-  <form on:submit|preventDefault={() => {}} class="rounded-lg overflow-hidden">
+  <form on:submit|preventDefault={() => handleSubmit()} class="rounded-lg overflow-hidden">
     <div class="bg-amber-800 p-3">
       <h1 class="text-lg text-white font-bold uppercase text-center">SIGN UP</h1>
     </div>
@@ -26,7 +62,14 @@
             />
           </svg>
         </label>
-        <input class="input" type="text" name="username" id="username" placeholder="Username" />
+        <input
+          class="input"
+          type="text"
+          name="username"
+          id="username"
+          placeholder="60XXXXXX001-1"
+          bind:value={form.username}
+        />
       </div>
       <div class="flex shadow rounded-lg mb-3">
         <label for="password" class="label">
@@ -43,7 +86,14 @@
             />
           </svg>
         </label>
-        <input class="input" type="password" name="password" id="password" placeholder="Password" />
+        <input
+          class="input"
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          bind:value={form.password}
+        />
       </div>
       <div class="flex shadow rounded-lg mb-3">
         <label for="confirm-pwd" class="label">
@@ -66,11 +116,13 @@
           name="confirm-pwd"
           id="confirm-pwd"
           placeholder="Confirm Password"
+          bind:value={form.confirm}
         />
       </div>
-      <div class="flex shadow rounded-lg">
-        <label for="student-id" class="label">
-          <svg
+      <hr class="my-3 border-slate-300" />
+      <div class="flex shadow rounded-lg mb-3">
+        <label for="username" class="label"
+          ><svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
@@ -78,20 +130,49 @@
           >
             <path
               fill-rule="evenodd"
-              d="M4.5 3.75a3 3 0 00-3 3v10.5a3 3 0 003 3h15a3 3 0 003-3V6.75a3 3 0 00-3-3h-15zm4.125 3a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm-3.873 8.703a4.126 4.126 0 017.746 0 .75.75 0 01-.351.92 7.47 7.47 0 01-3.522.877 7.47 7.47 0 01-3.522-.877.75.75 0 01-.351-.92zM15 8.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15zM14.25 12a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H15a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15z"
+              d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
               clip-rule="evenodd"
             />
           </svg>
         </label>
+        <!-- first name -->
         <input
           class="input"
           type="text"
-          name="student-id"
-          id="student-id"
-          placeholder="60XXXXXX001-1"
+          name="firstname"
+          id="firstname"
+          placeholder="Firstname"
+          bind:value={form.firstname}
+        />
+      </div>
+
+      <div class="flex shadow rounded-lg mb-3">
+        <label for="username" class="label"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </label>
+        <!-- last name -->
+        <input
+          class="input"
+          type="text"
+          name="lastname"
+          id="lastname"
+          placeholder="Lastname"
+          bind:value={form.lastname}
         />
       </div>
       <hr class="my-3 border-slate-300" />
+
       <button type="submit" class="btn w-full">Submit</button>
     </div>
   </form>
