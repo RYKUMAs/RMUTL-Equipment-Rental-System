@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import {
   createEquipment,
   deleteEquipment,
+  getListEquipment,
   requestEquipment,
   updateEquipment,
 } from "../services/equipment.service";
@@ -12,7 +13,7 @@ export default async function router(server: FastifyInstance) {
     schema: {
       body: {
         type: "object",
-        required: ["name", "count", "model", "broken","brandId"],
+        required: ["name", "count", "model", "broken", "brandId"],
         properties: {
           name: { type: "string" },
           count: { type: "number", minimum: 0 },
@@ -83,5 +84,9 @@ export default async function router(server: FastifyInstance) {
         },
       },
     },
+  });
+
+  server.get("/api/equipment/list", {
+    handler: getListEquipment,
   });
 }

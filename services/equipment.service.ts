@@ -25,6 +25,9 @@ async function calculateRemain(
     },
     where: {
       equipmentId: equipment.id,
+      status: {
+        not: "reject"
+      },
       return: null,
     },
   });
@@ -49,7 +52,7 @@ export async function createEquipment(
 
   return res.status(200).send({
     result: "ok",
-    data: equipment,
+    data: { ...equipment, remain: equipment.count },
   });
 }
 
@@ -127,7 +130,7 @@ export async function updateEquipment(
     data: req.body,
   });
 
-  const data = await calculateRemain(equipment)
+  const data = await calculateRemain(equipment);
 
   return res.status(200).send({
     result: "ok",
@@ -147,6 +150,23 @@ export async function deleteEquipment(
     },
     include: {
       brand: true,
+    },
+  });
+
+  return res.status(200).send({
+    result: "ok",
+    data: equipment,
+  });
+}
+
+export async function getListEquipment(
+  req: FastifyRequest,
+  res: FastifyReply,
+) {
+  const equipment = await prisma.equipment.findMany({
+    distinct: "name",
+    select: {
+      name: true,
     },
   });
 

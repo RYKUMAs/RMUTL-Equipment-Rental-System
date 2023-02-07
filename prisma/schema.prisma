@@ -43,10 +43,17 @@ model Rent {
   userId      String
   equipmentId Int
   count       Int
+  status      Status    @default(waiting)
   date        DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [username])
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
   return      Return?
+}
+
+enum Status {
+  waiting
+  approve
+  reject
 }
 
 model Return {

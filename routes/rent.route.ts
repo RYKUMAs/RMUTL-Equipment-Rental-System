@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import {
   createRent,
   deleteRent,
+  getStatistic,
   requestRent,
   updateRent,
 } from "../services/rent.service";
@@ -62,6 +63,7 @@ export default async function router(server: FastifyInstance) {
           userId: { type: "string" },
           equipmentId: { type: "number", minimum: 1 },
           count: { type: "number", minimum: 1 },
+          status: { type: "string" },
         },
       },
     },
@@ -74,6 +76,19 @@ export default async function router(server: FastifyInstance) {
         type: "object",
         properties: {
           id: { type: "number", minimum: 1 },
+        },
+      },
+    },
+  });
+
+  server.get("/api/rent/statistic", {
+    handler: getStatistic,
+    schema: {
+      params: {
+        type: "object",
+        properties: {
+          last: { type: "number", minimum: 1 },
+          equipment: { type: "string" },
         },
       },
     },

@@ -69,6 +69,9 @@ export async function requestRent(
           },
         },
       },
+      orderBy: {
+        id: "desc"
+      }
     });
 
   const count = id ? undefined : await prisma.rent.count();
@@ -134,5 +137,62 @@ export async function deleteRent(
   return res.status(200).send({
     result: "ok",
     data: rent,
+  });
+}
+
+export async function getStatistic(
+  req: FastifyRequest<{ Querystring: { last: number; equipment: string } }>,
+  res: FastifyReply,
+) {
+  const { last, equipment } = req.query;
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const result = [];
+  const date = new Date();
+
+  for (let i = 0; i < last; i++) {
+    let month = date.getMonth() - i;
+    let year = date.getFullYear();
+
+    if (month < 0) {
+      year--;
+      month = 12 + month;
+    }
+
+    const data = await prisma.rent.aggregate({
+      _count: true,
+      where: {
+        date: {
+          gte: new Date(year, month, 1),
+          lte: new Date(year, month + 1, 0),
+        },
+        equipment: {
+          name: equipment,
+        },
+      },
+    });
+
+    result.push({ month: months[month], year: year, count: data._count });
+  }
+
+  console.log(result);
+
+  res.status(200).send({
+    result: "ok",
+    data: result,
   });
 }

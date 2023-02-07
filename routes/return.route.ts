@@ -21,59 +21,59 @@ export default async function router(server: FastifyInstance) {
     },
   });
 
-  server.get("/api/return", {
-    handler: requestReturn,
-    schema: {
-      querystring: {
-        type: "object",
-        properties: {
-          limit: { type: "number", default: 20 },
-          offset: { type: "number", default: 0 },
-        },
-      },
-    },
-  });
+  // server.get("/api/return", {
+  //   handler: requestReturn,
+  //   schema: {
+  //     querystring: {
+  //       type: "object",
+  //       properties: {
+  //         limit: { type: "number", default: 20 },
+  //         offset: { type: "number", default: 0 },
+  //       },
+  //     },
+  //   },
+  // });
 
-  server.get("/api/return/:id", {
-    handler: requestReturn,
-    schema: {
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "number", minimum: 1 },
-        },
-      },
-    },
-  });
+  // server.get("/api/return/:id", {
+  //   handler: requestReturn,
+  //   schema: {
+  //     params: {
+  //       type: "object",
+  //       properties: {
+  //         id: { type: "number", minimum: 1 },
+  //       },
+  //     },
+  //   },
+  // });
 
-  server.put("/api/return/:id", {
-    handler: updateReturn,
-    schema: {
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "number", minimum: 1 },
-        },
-      },
-      body: {
-        type: "object",
-        properties: {
-          rentId: { type: "number", minimum: 1 },
-        },
-        additionalProperties: false,
-      },
-    },
-  });
+  // server.put("/api/return/:id", {
+  //   handler: updateReturn,
+  //   schema: {
+  //     params: {
+  //       type: "object",
+  //       properties: {
+  //         id: { type: "number", minimum: 1 },
+  //       },
+  //     },
+  //     body: {
+  //       type: "object",
+  //       properties: {
+  //         rentId: { type: "number", minimum: 1 },
+  //       },
+  //       additionalProperties: false,
+  //     },
+  //   },
+  // });
 
-  server.delete("/api/return/:id", {
-    handler: deleteReturn,
-    schema: {
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "number", minimum: 1 },
-        },
-      },
-    },
-  });
+  // server.delete("/api/return/:id", {
+  //   handler: deleteReturn,
+  //   schema: {
+  //     params: {
+  //       type: "object",
+  //       properties: {
+  //         id: { type: "number", minimum: 1 },
+  //       },
+  //     },
+  //   },
+  // });
 }
