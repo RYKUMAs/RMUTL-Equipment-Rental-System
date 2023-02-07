@@ -81,7 +81,7 @@
         <th>Remain</th>
         <th>Model</th>
         <th>Brand</th>
-        <th>Action</th>
+        <th class="w-36">Action</th>
       </tr>
       {#each $equipmentStore.data as item (item.id)}
         <tr class="odd:bg-slate-100">
@@ -93,7 +93,6 @@
           <td>{item.brand.name}</td>
         <td>
             <div class="flex justify-center gap-5">
-                 <!-- editbutton -->
                  <button on:click={() => showEdit(item)}
                       class="rounded-full transition-all text-indigo-500 hover:text-indigo-700">
                     <svg
@@ -110,7 +109,6 @@
                       />
                     </svg>
                   </button>
-                  <!-- editbutton -->
                   <button
                     on:click={() => handleDelete(item.id)}
                     class="rounded-full transition-all text-red-500 hover:text-red-700">
