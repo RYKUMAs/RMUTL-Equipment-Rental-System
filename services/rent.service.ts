@@ -40,39 +40,42 @@ export async function requestRent(
   res: FastifyReply,
 ) {
   const { id } = req.params;
-  const { limit, offset } = req.query;
+  const { userId, limit, offset } = req.query;
 
   const rent = id
     ? await prisma.rent.findFirst({
-      where: {
-        id: id,
-      },
-      include: {
-        user: true,
-        return: true,
-        equipment: {
-          include: {
-            brand: true,
+        where: {
+          id: id,
+        },
+        include: {
+          user: true,
+          return: true,
+          equipment: {
+            include: {
+              brand: true,
+            },
           },
         },
-      },
-    })
+      })
     : await prisma.rent.findMany({
-      skip: offset,
-      take: limit,
-      include: {
-        user: true,
-        return: true,
-        equipment: {
-          include: {
-            brand: true,
+        skip: offset,
+        take: limit,
+        where: {
+          userId: userId,
+        },
+        include: {
+          user: true,
+          return: true,
+          equipment: {
+            include: {
+              brand: true,
+            },
           },
         },
-      },
-      orderBy: {
-        id: "desc"
-      }
-    });
+        orderBy: {
+          id: "desc",
+        },
+      });
 
   const count = id ? undefined : await prisma.rent.count();
 

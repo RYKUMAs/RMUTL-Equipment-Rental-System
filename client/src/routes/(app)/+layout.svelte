@@ -5,7 +5,6 @@
   import axios from 'axios';
   import rmutl from '$lib/assets/rmutl.jpg';
   import Navbar from '$lib/components/Navbar.svelte';
-
   onMount(async () => {
     const response = await axios
       .get('http://localhost:5000/auth/check', {

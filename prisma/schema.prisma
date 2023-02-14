@@ -52,8 +52,8 @@ model Rent {
 
 enum Status {
   waiting
-  approve
-  reject
+  accepted
+  rejected
 }
 
 model Return {

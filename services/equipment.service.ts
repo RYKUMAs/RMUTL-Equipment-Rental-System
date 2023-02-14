@@ -26,7 +26,7 @@ async function calculateRemain(
     where: {
       equipmentId: equipment.id,
       status: {
-        not: "reject"
+        not: "rejected"
       },
       return: null,
     },

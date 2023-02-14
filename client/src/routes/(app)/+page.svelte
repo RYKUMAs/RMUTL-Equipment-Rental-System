@@ -2,7 +2,14 @@
   import axios from 'axios';
   import { userStore, equipmentStore } from '$lib/store';
   import { onMount } from 'svelte';
+  import Rent from './Rent.svelte';
   import { fly } from 'svelte/transition';
+
+  let addData = false;
+
+  function showAddData() {
+    addData = !addData;
+  }
 
   onMount(async () => {
     let res = await axios.get('http://localhost:5000/api/equipment').catch((e) => console.log(e));
@@ -18,9 +25,10 @@
   
 </script>
 
+<Rent bind:state={addData} />
 <div class="p-5" in:fly={{ y: 32, duration: 500 }}>
   {#if $userStore}
-    <button class="btn">
+    <button class="btn mb-3" on:click={() => showAddData()}>
       Request Equipment
     </button>
   {/if}
@@ -31,16 +39,12 @@
         <th>Name</th>
         <th>Count</th>
         <th>Remain</th>
-        <th>Model</th>
-        <th>Brand</th>
       </tr>
       {#each $equipmentStore.data as item (item.id)}
         <tr class="odd:bg-amber-50">
-          <td>{item.name}</td>
+          <td>{item.name} / {item.model} / {item.brand.name}</td>
           <td>{item.count}</td>
           <td>{item.remain}</td>
-          <td>{item.model}</td>
-          <td>{item.brand.name}</td>
         </tr>
       {/each}
     </table>

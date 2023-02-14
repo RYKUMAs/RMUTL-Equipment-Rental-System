@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import Add from './Add.svelte';
+  import moment from 'moment';
 
   onMount(async () => {
     let res = await axios.get('http://localhost:5000/api/rent').catch((e) => console.log(e));
@@ -84,22 +85,42 @@
           <td>{item.user.firstname} {item.user.lastname}</td>
           <td>{item.equipment.name} / {item.equipment.model} / {item.equipment.brand.name}</td>
           <td>{item.count}</td>
-          <td>{new Date(item.date).toLocaleString()}</td>
-          <td>{item.return ? new Date(item.return.date).toLocaleString() : 'Not Returned'}</td>
           <td>
-            <span class="uppercase text-sm bg-blue-600 py-1 px-2 text-white font-bold rounded-lg">
+            {moment().diff(moment(item.date)) < 2 * 24 * 60 * 60 * 1000
+              ? moment(item.date).fromNow()
+              : new Date(item.date).toLocaleString()}
+          </td>
+          <td>
+            {item.return
+              ? moment().diff(moment(item.date)) < 2 * 24 * 60 * 60 * 1000
+                ? moment(item.date).fromNow()
+                : new Date(item.date).toLocaleString()
+              : item.status == 'rejected' || item.status == 'waiting'
+              ? '-'
+              : 'Not Returned'}
+          </td>
+          <td>
+            <span
+              class="uppercase text-sm {item.return
+                ? 'bg-blue-600'
+                : item.status == 'waiting'
+                ? 'bg-yellow-600'
+                : item.status == 'accepted'
+                ? 'bg-green-500'
+                : 'bg-red-600'} py-1 px-2 text-white font-bold rounded-lg"
+            >
               {#if !item.return}
                 {item.status}
               {:else}
-                return
+                returned
               {/if}
             </span>
           </td>
           <td>
-            {#if item.status != 'approve' && item.status != 'reject'}
+            {#if item.status != 'accepted' && item.status != 'rejected'}
               <div class="flex justify-center gap-5">
                 <button
-                  on:click={() => updateStatus(item.id, 'approve')}
+                  on:click={() => updateStatus(item.id, 'accepted')}
                   class="rounded-full transition-all text-green-500 hover:text-indigo-700"
                 >
                   <svg
@@ -118,7 +139,7 @@
                   </svg>
                 </button>
                 <button
-                  on:click={() => updateStatus(item.id, 'reject')}
+                  on:click={() => updateStatus(item.id, 'rejected')}
                   class="rounded-full transition-all text-red-500 hover:text-red-700"
                 >
                   <svg
@@ -133,7 +154,7 @@
                   </svg>
                 </button>
               </div>
-            {:else if !item.return && item.status != 'reject'}
+            {:else if !item.return && item.status != 'rejected'}
               <button
                 on:click={() => updateReturn(item.id)}
                 class="rounded-full transition-all text-blue-500 hover:text-indigo-700"

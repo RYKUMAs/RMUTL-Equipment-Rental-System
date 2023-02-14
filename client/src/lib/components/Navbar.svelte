@@ -6,6 +6,10 @@
     {
       name: 'Home',
       link: '/'
+    },
+    {
+      name: 'History',
+      link: '/history'
     }
   ];
 </script>
