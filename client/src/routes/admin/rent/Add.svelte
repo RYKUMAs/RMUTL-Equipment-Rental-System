@@ -33,6 +33,10 @@
 
       if ($rentStore.data.length < $rentStore.limit) {
         $rentStore.data = [data, ...$rentStore.data];
+      } else {
+        $rentStore.data.pop();
+
+        $rentStore.data = [data, ...$rentStore.data];
       }
 
       $rentStore.total = $rentStore.total + 1;

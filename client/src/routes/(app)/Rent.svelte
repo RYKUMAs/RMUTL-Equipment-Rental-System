@@ -54,7 +54,7 @@
 <Modal bind:show={state}>
   <div slot="content">
     <form on:submit|preventDefault|stopPropagation={handleSubmit}>
-      <div class="text-xl font-bold">Add Rent</div>
+      <div class="text-xl font-bold">Request Equipment</div>
       <hr class="mb-3" />
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div class="md:col-span-2 lg:col-span-2 ">

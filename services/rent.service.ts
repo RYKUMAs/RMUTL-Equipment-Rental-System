@@ -192,8 +192,6 @@ export async function getStatistic(
     result.push({ month: months[month], year: year, count: data._count });
   }
 
-  console.log(result);
-
   res.status(200).send({
     result: "ok",
     data: result,

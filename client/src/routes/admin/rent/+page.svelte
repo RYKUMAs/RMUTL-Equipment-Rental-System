@@ -1,6 +1,7 @@
 <script>
   import axios from 'axios';
   import { rentStore } from '$lib/store';
+  import Pagination from '$lib/components/Pagination.svelte';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import Add from './Add.svelte';
@@ -40,6 +41,26 @@
     }
   }
 
+  async function paginationCallback(offset) {
+    let res = await axios
+      .get(`http://localhost:5000/api/rent?offset=${offset}`)
+      .catch((e) => console.log(e));
+
+    const body = res.data;
+
+    if (body && body.result == 'ok') {
+      delete body.result;
+
+      $rentStore = body;
+    }
+
+    return {
+      limit: body.limit,
+      offset: body.offset,
+      total: body.total
+    };
+  }
+
   async function updateReturn(id) {
     try {
       await axios.post(`http://localhost:5000/api/return`, {
@@ -67,7 +88,7 @@
   <div class="mb-5">
     <button class="btn bg-slate-500 hover:bg-slate-600" on:click={() => showAddData()}>Add</button>
   </div>
-  <div class="rounded-lg overflow-hidden border border-slate-500">
+  <div class="rounded-lg overflow-hidden border border-slate-500 mb-3">
     <table class="w-full">
       <tr class="border-b bg-slate-500 text-white">
         <th>ID</th>
@@ -92,9 +113,9 @@
           </td>
           <td>
             {item.return
-              ? moment().diff(moment(item.date)) < 2 * 24 * 60 * 60 * 1000
-                ? moment(item.date).fromNow()
-                : new Date(item.date).toLocaleString()
+              ? moment().diff(moment(item.return.date)) < 2 * 24 * 60 * 60 * 1000
+                ? moment(item.return.date).fromNow()
+                : new Date(item.return.date).toLocaleString()
               : item.status == 'rejected' || item.status == 'waiting'
               ? '-'
               : 'Not Returned'}
@@ -179,6 +200,15 @@
         </tr>
       {/each}
     </table>
+  </div>
+  <div>
+    <Pagination
+      bind:limit={$rentStore.limit}
+      bind:offset={$rentStore.offset}
+      bind:total={$rentStore.total}
+      callback={paginationCallback}
+      admin={true}
+    />
   </div>
 </div>
 
