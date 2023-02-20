@@ -18,7 +18,7 @@ model User {
   type      Type
   firstname String
   lastname  String
-  rent      Rent[]
+  Rent      Rent[]
 }
 
 model Brand {
@@ -28,14 +28,14 @@ model Brand {
 }
 
 model Equipment {
-  id      Int    @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   name    String
   count   Int
-  broken  Int
   model   String
   brandId Int
-  brand   Brand  @relation(fields: [brandId], references: [id])
+  brand   Brand    @relation(fields: [brandId], references: [id])
   rent    Rent[]
+  Broken  Broken[]
 }
 
 model Rent {
@@ -48,6 +48,7 @@ model Rent {
   user        User      @relation(fields: [userId], references: [username])
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
   return      Return?
+  broken      Broken?
 }
 
 enum Status {
@@ -61,4 +62,19 @@ model Return {
   date   DateTime @default(now())
   rentId Int      @unique
   rent   Rent     @relation(fields: [rentId], references: [id])
+}
+
+enum BrokenStatus {
+  fixed
+  pending
+}
+
+model Broken {
+  id          Int          @id @default(autoincrement())
+  equipmentId Int
+  equipment   Equipment    @relation(fields: [equipmentId], references: [id])
+  count       Int
+  status      BrokenStatus @default(pending)
+  rentId      Int?         @unique
+  rent        Rent?        @relation(fields: [rentId], references: [id])
 }

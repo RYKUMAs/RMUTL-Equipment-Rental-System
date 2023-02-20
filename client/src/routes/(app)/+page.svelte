@@ -38,12 +38,14 @@
       <tr class="border-b bg-amber-800 text-white">
         <th>Name</th>
         <th>Count</th>
+        <th>Broken</th>
         <th>Remain</th>
       </tr>
       {#each $equipmentStore.data as item (item.id)}
         <tr class="odd:bg-amber-50">
           <td>{item.name} / {item.model} / {item.brand.name}</td>
           <td>{item.count}</td>
+          <td>{item.broken}</td>
           <td>{item.remain}</td>
         </tr>
       {/each}

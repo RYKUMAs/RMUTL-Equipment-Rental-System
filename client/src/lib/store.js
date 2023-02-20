@@ -13,3 +13,4 @@ export const rentStore = writable(storeStructure);
 export const returnStore = writable(storeStructure);
 export const historyStore = writable(storeStructure);
 export const userStore = writable(null);
+export const brokenStore = writable(storeStructure);

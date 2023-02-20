@@ -12,30 +12,42 @@ type Query = {
   offset: number;
 } & Equipment;
 
-type EquipmentWithRemain<T> = T & {
+type EquipmentWithCalculatedFields<T> = T & {
   remain: number;
+  broken: number;
 };
 
-async function calculateRemain(
+async function calculateFields(
   equipment: Equipment,
-): Promise<EquipmentWithRemain<Equipment>> {
-  const aggregation = await prisma.rent.aggregate({
+): Promise<EquipmentWithCalculatedFields<Equipment>> {
+  const remains = await prisma.rent.aggregate({
     _sum: {
       count: true,
     },
     where: {
       equipmentId: equipment.id,
       status: {
-        not: "rejected"
+        not: "rejected",
       },
       return: null,
     },
   });
 
+  const brokens = await prisma.broken.aggregate({
+    _sum: {
+      count: true,
+    },
+    where: {
+      equipmentId: equipment.id,
+      status: "pending",
+    },
+  });
+
   return {
     ...equipment,
-    remain: equipment.count -
-      (aggregation._sum.count != null ? aggregation._sum.count : 0),
+    remain:
+      equipment.count - (remains._sum.count != null ? remains._sum.count : 0) - (brokens._sum.count ?? 0),
+    broken: brokens._sum.count ?? 0,
   };
 }
 
@@ -65,44 +77,46 @@ export async function requestEquipment(
 
   const equipment = id
     ? await prisma.equipment.findFirst({
-      where: {
-        id: id,
-      },
-      include: {
-        brand: true,
-      },
-    })
-    : await prisma.equipment.findMany({
-      where: {
-        name: {
-          contains: name,
+        where: {
+          id: id,
         },
-      },
-      include: {
-        brand: true,
-      },
-      skip: offset,
-      take: limit,
-    });
+        include: {
+          brand: true,
+        },
+      })
+    : await prisma.equipment.findMany({
+        where: {
+          name: {
+            contains: name,
+          },
+        },
+        include: {
+          brand: true,
+        },
+        skip: offset,
+        take: limit,
+      });
 
-  const count = id ? undefined : await prisma.equipment.count({
-    where: {
-      name: {
-        contains: name,
-      },
-    },
-  });
+  const count = id
+    ? undefined
+    : await prisma.equipment.count({
+        where: {
+          name: {
+            contains: name,
+          },
+        },
+      });
 
-  let data: EquipmentWithRemain<Equipment>[] = [];
+  let data: EquipmentWithCalculatedFields<Equipment>[] = [];
 
   if (Array.isArray(equipment)) {
     for (let i = 0; i < equipment.length; i++) {
-      data = [...data, await calculateRemain(equipment[i])];
+      data = [...data, await calculateFields(equipment[i])];
     }
   }
 
   if (id && equipment != null) {
-    data.push(await calculateRemain(equipment as Equipment));
+    data.push(await calculateFields(equipment as Equipment));
   }
 
   return res.status(200).send({
@@ -130,7 +144,7 @@ export async function updateEquipment(
     data: req.body,
   });
 
-  const data = await calculateRemain(equipment);
+  const data = await calculateFields(equipment);
 
   return res.status(200).send({
     result: "ok",
@@ -159,10 +173,7 @@ export async function deleteEquipment(
   });
 }
 
-export async function getListEquipment(
-  req: FastifyRequest,
-  res: FastifyReply,
-) {
+export async function getListEquipment(req: FastifyRequest, res: FastifyReply) {
   const equipment = await prisma.equipment.findMany({
     distinct: "name",
     select: {

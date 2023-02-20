@@ -21,6 +21,7 @@ export async function createRent(
     include: {
       user: true,
       return: true,
+      broken: true,
       equipment: {
         include: {
           brand: true,
@@ -50,6 +51,7 @@ export async function requestRent(
         include: {
           user: true,
           return: true,
+          broken: true,
           equipment: {
             include: {
               brand: true,
@@ -66,6 +68,7 @@ export async function requestRent(
         include: {
           user: true,
           return: true,
+          broken: true,
           equipment: {
             include: {
               brand: true,
@@ -102,6 +105,7 @@ export async function updateRent(
     include: {
       user: true,
       return: true,
+      broken: true,
       equipment: {
         include: {
           brand: true,
@@ -129,6 +133,7 @@ export async function deleteRent(
     include: {
       user: true,
       return: true,
+      broken: true,
       equipment: {
         include: {
           brand: true,
